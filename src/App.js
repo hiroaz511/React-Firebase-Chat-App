@@ -10,42 +10,13 @@ firebase.initializeApp(config);
   const db = firebase.firestore();
     db.settings({
         timestampsInSnapshots: true
-      });
+    });
   const collection = db.collection('tweets');
 
- {/*データベースから取り出して<li>に追加*/}
-      const koko = document.getElementById('koko');
-
-      // const sort =function(a,b){
-      //   return (a.created < b.created ? 1 : -1);
-      // };
-
-      collection.orderBy('created').get()
-      .then(snapshot =>{
-      snapshot.forEach(doc => {
-      const li = document.createElement('li');
-      console.log(doc.id, '=>', doc.data());
-      li.innerHTML = `<div class="line-bc">
-                      <div class="balloon6">
-                       <div class="faceicon">
-                        <img src="favicon.ico">
-                        ${doc.data().user}
-                       </div>
-                       <div class="chatting">
-                        <div class="says">
-                          <p>${doc.data().text}</p>
-                        </div>
-                       </div>
-                      </div>
-                      </div>`
-
-      koko.appendChild(li);
-      });
 
 
 
 
-    });
 
 class App extends Component {
   constructor(props) {
@@ -61,8 +32,8 @@ class App extends Component {
 
   render() {
     return (
+      <div>
       <div className="container">
-
         <form onSubmit={this.handleSubmit}
               autoComplete="off">
           <input
@@ -84,6 +55,11 @@ class App extends Component {
             つぶやく
           </button>
         </form>
+    </div>
+      {/*  TweetList Componentの呼び出し */}
+        <div className="tweet-list">
+        <TweetList items={this.state.items} />
+        </div>
       </div>
     );
   }
@@ -93,6 +69,29 @@ class App extends Component {
   }
   userName(event){
     this.setState({ user: event.target.value});
+  }
+
+  componentWillMount() {
+   collection.orderBy('created').get()
+   .then(snapshot =>{
+    snapshot.docs.map(doc => {
+    console.log(doc.data());
+
+    const allItems = {
+      user: doc.data().user,
+      text: doc.data().text,
+      created: doc.data().created,
+    }
+
+    this.setState(state => ({
+      items: state.items.concat(allItems),
+      user: '',
+      text: ''
+    }));
+
+     });
+    });
+
   }
 
   handleSubmit(event) {
@@ -126,31 +125,37 @@ class App extends Component {
         console.log(error);
       });
 
-    this.setState(state => ({
+      this.setState(state => ({
       items: state.items.concat(newItem),
       user: '',
       text: ''
     }));
-{/*データベースから取り出して<li>にリアルタイムで追加*/}
-    collection.orderBy('created').get()
-      .then(doc => {
-      const li = document.createElement('li');
-     {/* li.innerHTML = `${newItem.user+newItem.text}`*/}
-      li.innerHTML = `<div class="line-bc">
-                      <div class="balloon6">
-                       <div class="faceicon">
-                       <img src="favicon.ico">
-                        ${newItem.user}
-                       </div>
-                       <div class="chatting">
-                        <div class="says">
-                          <p>${newItem.text}</p>
-                        </div>
-                       </div>
-                      </div>
-                      </div>`
-      koko.appendChild(li);
-      });
+  }
+}
+
+class TweetList extends React.Component {
+  render() {
+    return (
+      <ul>
+        {this.props.items.map(item => (
+          <li key={item.id}>
+          <div className="line-bc">
+            <div className="balloon6">
+              <div className="faceicon">
+                <img src="favicon.ico"/>
+                  {item.user}
+              </div>
+              <div className="chatting">
+                <div className="says">
+                  <p>{item.text}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          </li>
+        ))}
+      </ul>
+    );
   }
 }
 
