@@ -89,6 +89,23 @@ body,ul{
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
 }
 
+.btn-top {
+  color: gray;
+  background-color: #E7ECEF;
+  border-color: gray;
+}
+
+.btn-top:hover {
+  color: #fff;
+  background-color: gray;
+  border-color: gray;
+}
+
+.btn-top:focus, .btn-top.focus {
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+}
+
+
 /*ツイートリスト*/
 .tweet-list{
   width:350px;

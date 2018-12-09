@@ -25,7 +25,7 @@ class App extends Component {
     this.tweet = this.tweet.bind(this);
     this.userName = this.userName.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
+    this.scrollTop = this.scrollTop.bind(this);
 
 
   }
@@ -51,14 +51,21 @@ class App extends Component {
           <button
             className="btn btn-success"
             type="submit"
-          >
-            つぶやく
+          >つぶやく
           </button>
         </form>
     </div>
       {/*  TweetList Componentの呼び出し */}
         <div className="tweet-list">
         <TweetList items={this.state.items} />
+        <div style={{textAlign: "center"}}>
+        <button
+          className="btn btn-top"
+          style={{marginBottom:"10px"}}
+          onClick={this.scrollTop}
+          >Topへ
+        </button>
+        </div>
         </div>
       </div>
     );
@@ -130,12 +137,19 @@ class App extends Component {
       user: '',
       text: ''
     }));
+       document.getElementById("bottom").scrollIntoView(true)
   }
+
+  scrollTop() {
+    window.scrollTo( 0, 0 );
+  }
+
 }
 
 class TweetList extends React.Component {
   render() {
     return (
+      <div>
       <ul>
         {this.props.items.map(item => (
           <li key={item.id}>
@@ -155,6 +169,8 @@ class TweetList extends React.Component {
           </li>
         ))}
       </ul>
+      <span id="bottom"></span>
+      </div>
     );
   }
 }
